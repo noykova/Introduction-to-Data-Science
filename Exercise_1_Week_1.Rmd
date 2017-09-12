@@ -155,5 +155,62 @@ result <- fromJSON(file = "parsed.json")
 
 ```
 
-The result is worse than the previous one, obtained in R. 
+The result is worse than the previous one, obtained in R.
+
+# Exercise 3: SQL data (Baseball).
+
+##3.1. Reading the data 
+
+This exercise involves an SQL database with historical data on baseball players.First I download the sqlite version of the dataset from Kaggle and unzip in sepatrate data directory.
+For further analysis I have used RSQLite and DBI packages in R. 
+Connection with the database and list of the tables involved is provided as: 
+
+```{r}
+library("RSQLite")
+library(DBI)
+drv <- dbDriver("SQLite")
+con <- dbConnect(drv, dbname = "database.sqlite")
+dbListTables(con)
+dbListFields(con, "player")
+```
+
+
+#3.2	Join the tables player and hall_of_fame by the key player_id which appears in both. Select the rows where the field inducted takes value 'Y' (i.e., those entries where the player in question was voted to the Hall of Fame). 
+We get 312 famous players, including Babe Ruth and Yogi Berra.
+
+```{r}
+joinedresults <- dbSendQuery(con, "SELECT * FROM 
+player INNER JOIN hall_of_fame USING(player_id) WHERE inducted = 'Y'")
+fetch(joinedresults)
+dbDisconnect(con)
+```
+
+#3.3.	Join in a third table, player_college, again by the key player_id. The player_college table indicates for which college (university) the player has played, if any, in each year.
+
+The number of rows in the table player_college per player varies between zero and nine.
+
+We have to Keep the restriction that the player should have been selected to the Hall of Fame (inducted = 'Y'), and group the output by college (college_id). 
+
+```{r}
+drv <- dbDriver("SQLite")
+con <- dbConnect(drv, dbname = "database.sqlite")
+#list the tables in the database
+dbListTables(con)
+
+joined <-dbSendQuery(con, "SELECT DISTINCT * from (SELECT * FROM 
+player INNER JOIN hall_of_fame USING(player_id) WHERE inducted = 'Y') INNER JOIN player_college USING(player_id) WHERE inducted = 'Y' GROUP BY college_id")
+fetch(joined)
+dbDisconnect(con)
+
+```
+
+
+Next we have to count how many Hall of Fame players are alumni of each college. There is one college that has as many as three. Which one? (To see the full name of the college, you can look up the college_id in table college). This is better to be provided in Python. 
+
+
+
+
+
+
+
 

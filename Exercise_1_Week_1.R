@@ -62,8 +62,16 @@ write.csv(tit, file = "titCsv.csv")
 
 library(rjson)
 titJson <- toJSON(unname(split(tit, 1:nrow(tit))))
-cat(titJson)
+print(titJson)
 
+
+# Give the input file name to the function.
+result <- fromJSON(file = "parsed.json")
+
+# Print the result.
+#print(result)
+
+#Exercise 3: SQL-data
 
 
 
