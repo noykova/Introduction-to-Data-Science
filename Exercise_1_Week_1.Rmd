@@ -1,0 +1,128 @@
+---
+title: "Exercise_1_Week_1"
+output: html_document
+---
+# Exercise set 1
+
+# Exercise 1: preprocessing and general handling of the data.
+
+##1.1. Reading the data 
+
+Here we use part of the Titanic data described [here](https://www.kaggle.com/c/titanic/data). The data include information about the passangers on the board of the RMS Titanic. On April 15, 1912, during her maiden voyage, the Titanic sank after colliding with an iceberg, killing 1502 out of 2224 passengers and crew. 
+
+
+```{r}
+titanic <- read.csv(file="train.csv",header=TRUE,sep=",",na.strings=c(""," ","NA"))
+
+```
+
+##1.2.	Have a look at the data. 
+
+Look at the dimension, structure and column names of the data:
+
+```{r}
+library(dplyr)
+dim(titanic)
+str(titanic)
+colnames(titanic)
+summary(titanic)
+
+```
+
+The original data involve 891 observations of 12 variables. 
+
+We will build new representations of the dataset that are better suited for a particular purpose. Some of the columns, e.g Name, simply identify a person and cannot be useful for prediction tasks - remove them.
+
+I decided to delete the following columns: *Name*, *sibsp* (# of siblings / spouses aboard the Titanic, and *parch* (# of parents / children aboard the Titanic). 
+
+```{r}
+keep <- c("PassengerId", "Survived", "Pclass", "Sex", "Age", "Ticket", "Fare", "Cabin")
+tit <- select(titanic, one_of(keep))
+glimpse(tit)
+
+```
+
+
+
+#3.	Take only the first character feom column Cabin and add it as a new column to the table.
+
+```{r}
+tit$Cab <- substr(tit$Cabin, 0, 1)
+glimpse(tit)
+
+```
+
+
+
+#4.	Transform string to categorical column values. 
+
+You'll notice that some of the columns, such as the previously added deck number are categorical. Their representation as a string is not efficient for further computation. Transform them into numeric values so that a unique integer id corresponds to each distinct category. Hint. pandas can do this for you.
+
+```{r}
+tit$Cab <- as.factor(tit$Cab)
+glimpse(tit)
+
+```
+
+#5.	Imputation of the missing data
+
+Some of the rows in the data have missing values, e.g when the cabin number of a person is not known. Most machine learning algorithms have trouble with missing values, and they need to be handled in preprocessing:
+
+#a) For continous values, replace the missing values with the average of the non-missing values of that column.
+
+The following ifelse() function returns the imputed mean value if its first argument is NA. Otherwise, it returns the first argument: 
+
+```{r}
+tit$Age <- ifelse(is.na(tit$Age), mean(tit$Age, na.rm=TRUE), tit$Age)
+glimpse(tit)
+
+```
+
+
+#b) For discrete and categorical values, replace the missing values with the mode of the column.
+
+```{r}
+library(Hmisc)
+tit$Cabin <- impute(tit$Cabin, mean)
+tit$Cab <- impute(tit$Cab, mean)
+glimpse(tit)
+
+```
+
+
+#6.	Exporting the data as .csv and .json formats.
+
+#6.1 Exprort the data as .csv file
+
+```{r}
+write.csv(tit, file = "titCsv.csv")
+
+```
+
+#6.1 Exprort the data as .json file
+
+```{r}
+library(rjson)
+titJson <- toJSON(unname(split(tit, 1:nrow(tit))))
+cat(titJson)
+
+```
+
+The created .json data format is different than the structure required in the exercises set: 
+
+[
+    {
+        "Deck": 0,
+        "Age": 20,
+        "Survived", 0
+        ...
+    },
+    {
+        ...
+    }
+]
+
+
+**Conclusion:** R is niot the best language for creating, editing and saving .json files. 
+Therefore I continue this work in Python. 
+
