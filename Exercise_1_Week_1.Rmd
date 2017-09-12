@@ -124,5 +124,36 @@ The created .json data format is different than the structure required in the ex
 
 
 **Conclusion:** R is niot the best language for creating, editing and saving .json files. 
-Therefore I continue this work in Python. 
+Therefore I continue the work in Python. 
+The code for producing .json file is: 
+
+```
+import csv
+import json
+
+#convert .csv to .json in Python. 
+  
+# Open the CSV  
+f = open( 'titCsv.csv', 'rU' )  
+# Change each fieldname to the appropriate field name. I know, so difficult.  
+reader = csv.DictReader( f, fieldnames = ( "PasengerID","Survived","Pclass","Sex","Age","Ticket","Fare","Cabin","Cab" ))  
+# Parse the CSV into JSON  
+out = json.dumps( [ row for row in reader ] )  
+print ("JSON parsed!")  
+# Save the JSON  
+f = open( 'parsed.json', 'w')  
+f.write(out)  
+print ("JSON saved!")  
+
+
+```
+
+The output file parsed.json is imported and checked in R. 
+
+```{r}
+result <- fromJSON(file = "parsed.json")
+
+```
+
+The result is worse than the previous one, obtained in R. 
 
