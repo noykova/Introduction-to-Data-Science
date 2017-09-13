@@ -44,7 +44,7 @@ glimpse(tit)
 
 
 
-#3.	Take only the first character feom column Cabin and add it as a new column to the table.
+#1.3.	Take only the first character feom column Cabin and add it as a new column to the table.
 
 ```{r}
 tit$Cab <- substr(tit$Cabin, 0, 1)
@@ -54,7 +54,7 @@ glimpse(tit)
 
 
 
-#4.	Transform string to categorical column values. 
+#1.4.	Transform string to categorical column values. 
 
 You'll notice that some of the columns, such as the previously added deck number are categorical. Their representation as a string is not efficient for further computation. Transform them into numeric values so that a unique integer id corresponds to each distinct category. Hint. pandas can do this for you.
 
@@ -64,7 +64,7 @@ glimpse(tit)
 
 ```
 
-#5.	Imputation of the missing data
+#1.5.	Imputation of the missing data
 
 Some of the rows in the data have missing values, e.g when the cabin number of a person is not known. Most machine learning algorithms have trouble with missing values, and they need to be handled in preprocessing:
 
@@ -90,16 +90,16 @@ glimpse(tit)
 ```
 
 
-#6.	Exporting the data as .csv and .json formats.
+#1.6.	Exporting the data as .csv and .json formats.
 
-#6.1 Exprort the data as .csv file
+# Exprort the data as .csv file
 
 ```{r}
 write.csv(tit, file = "titCsv.csv")
 
 ```
 
-#6.1 Exprort the data as .json file
+# Exprort the data as .json file
 
 ```{r}
 library(rjson)
@@ -157,6 +157,43 @@ result <- fromJSON(file = "parsed.json")
 
 The result is worse than the previous one, obtained in R.
 
+# Exercise 2: Text data.
+
+We'll are looking into Amazon reviews, and the steps needed to transform a raw dataset into one more suitable for prediction tasks.
+
+#2.1	Download the data in .json format.
+
+```{r}
+result <- fromJSON(file = "Automotive_5.json")
+print(result)
+```
+It seems that the reading did not succeed, and only the first json object was read. 
+
+Useful library for dealing with .json objects . The tutorial is given [here](https://cran.r-project.org/web/packages/tidyjson/vignettes/introduction-to-tidyjson.html)
+eBook about handling and processing strings in R [here](http://gastonsanchez.com/Handling_and_Processing_Strings_in_R.pdf)
+
+#2.2 Downcase the contents, remove all punctuation and stop-words in the reviewText field
+```{r}
+library(tm)
+textBeg<-result[['reviewText']]
+textBeg <- result$reviewText
+textBeg = tolower(textBeg) #make it lower case
+textBeg
+textBeg = gsub('[[:punct:]]', '', textBeg) #remove punctuation
+textBeg
+#remove stop-words
+stopwords_regex = paste(stopwords('en'), collapse = '\\b|\\b')
+stopwords_regex = paste0('\\b', stopwords_regex, '\\b')
+textBeg = stringr::str_replace_all(textBeg, stopwords_regex, '')
+textBeg
+```
+
+
+d) Apply a stemmer on the paragraphs, so that inflected forms are mapped to the base form. For example, for python the popular natural language toolkit nltk has an easy-to-use stemmer.
+e) Filter the data by selecting reviews where the field overall is 4 or 5, and store the review texts in file pos.txt. Similarly, select reviews with rating 1 or 2 and store the reviews in file neg.txt. (Ignore the reviews with overall rating 3.) Each line in the two files should contain exactly one preprocessed review text without the rating.
+Having created two collections of positive and negative reviews, respectively, you may wish to take a quick look to see how the review texts differ between them. Here too, we will be using this data later to experiment with machine learning methods.
+
+
 # Exercise 3: SQL data (Baseball).
 
 ##3.1. Reading the data 
@@ -206,6 +243,7 @@ dbDisconnect(con)
 
 
 Next we have to count how many Hall of Fame players are alumni of each college. There is one college that has as many as three. Which one? (To see the full name of the college, you can look up the college_id in table college). This is better to be provided in Python. 
+
 
 
 

@@ -145,14 +145,17 @@ $(document).ready(function () {
 <li><a href="#reading-the-data">1.1. Reading the data</a></li>
 <li><a href="#have-a-look-at-the-data.">1.2. Have a look at the data.</a></li>
 </ul></li>
-<li><a href="#take-only-the-first-character-feom-column-cabin-and-add-it-as-a-new-column-to-the-table.">3. Take only the first character feom column Cabin and add it as a new column to the table.</a></li>
-<li><a href="#transform-string-to-categorical-column-values.">4. Transform string to categorical column values.</a></li>
-<li><a href="#imputation-of-the-missing-data">5. Imputation of the missing data</a></li>
+<li><a href="#take-only-the-first-character-feom-column-cabin-and-add-it-as-a-new-column-to-the-table.">1.3. Take only the first character feom column Cabin and add it as a new column to the table.</a></li>
+<li><a href="#transform-string-to-categorical-column-values.">1.4. Transform string to categorical column values.</a></li>
+<li><a href="#imputation-of-the-missing-data">1.5. Imputation of the missing data</a></li>
 <li><a href="#a-for-continous-values-replace-the-missing-values-with-the-average-of-the-non-missing-values-of-that-column.">a) For continous values, replace the missing values with the average of the non-missing values of that column.</a></li>
 <li><a href="#b-for-discrete-and-categorical-values-replace-the-missing-values-with-the-mode-of-the-column.">b) For discrete and categorical values, replace the missing values with the mode of the column.</a></li>
-<li><a href="#exporting-the-data-as-.csv-and-.json-formats.">6. Exporting the data as .csv and .json formats.</a></li>
-<li><a href="#exprort-the-data-as-.csv-file">6.1 Exprort the data as .csv file</a></li>
-<li><a href="#exprort-the-data-as-.json-file">6.1 Exprort the data as .json file</a></li>
+<li><a href="#exporting-the-data-as-.csv-and-.json-formats.">1.6. Exporting the data as .csv and .json formats.</a></li>
+<li><a href="#exprort-the-data-as-.csv-file">Exprort the data as .csv file</a></li>
+<li><a href="#exprort-the-data-as-.json-file">Exprort the data as .json file</a></li>
+<li><a href="#exercise-2-text-data.">Exercise 2: Text data.</a></li>
+<li><a href="#download-the-data-in-.json-format.">2.1 Download the data in .json format.</a></li>
+<li><a href="#downcase-the-contents-remove-all-punctuation-and-stop-words-in-the-reviewtext-field">2.2 Downcase the contents, remove all punctuation and stop-words in the reviewText field</a></li>
 <li><a href="#exercise-3-sql-data-baseball.">Exercise 3: SQL data (Baseball).</a><ul>
 <li><a href="#reading-the-data-1">3.1. Reading the data</a></li>
 </ul></li>
@@ -256,7 +259,7 @@ glimpse(tit)</code></pre>
 </div>
 </div>
 <div id="take-only-the-first-character-feom-column-cabin-and-add-it-as-a-new-column-to-the-table." class="section level1">
-<h1>3. Take only the first character feom column Cabin and add it as a new column to the table.</h1>
+<h1>1.3. Take only the first character feom column Cabin and add it as a new column to the table.</h1>
 <pre class="r"><code>tit$Cab &lt;- substr(tit$Cabin, 0, 1)
 glimpse(tit)</code></pre>
 <pre><code>## Observations: 891
@@ -272,7 +275,7 @@ glimpse(tit)</code></pre>
 ## $ Cab         &lt;chr&gt; NA, &quot;C&quot;, NA, &quot;C&quot;, NA, NA, &quot;E&quot;, NA, NA, NA, &quot;G&quot;, &quot;C...</code></pre>
 </div>
 <div id="transform-string-to-categorical-column-values." class="section level1">
-<h1>4. Transform string to categorical column values.</h1>
+<h1>1.4. Transform string to categorical column values.</h1>
 <p>You’ll notice that some of the columns, such as the previously added deck number are categorical. Their representation as a string is not efficient for further computation. Transform them into numeric values so that a unique integer id corresponds to each distinct category. Hint. pandas can do this for you.</p>
 <pre class="r"><code>tit$Cab &lt;- as.factor(tit$Cab)
 glimpse(tit)</code></pre>
@@ -289,7 +292,7 @@ glimpse(tit)</code></pre>
 ## $ Cab         &lt;fctr&gt; NA, C, NA, C, NA, NA, E, NA, NA, NA, G, C, NA, NA...</code></pre>
 </div>
 <div id="imputation-of-the-missing-data" class="section level1">
-<h1>5. Imputation of the missing data</h1>
+<h1>1.5. Imputation of the missing data</h1>
 <p>Some of the rows in the data have missing values, e.g when the cabin number of a person is not known. Most machine learning algorithms have trouble with missing values, and they need to be handled in preprocessing:</p>
 </div>
 <div id="a-for-continous-values-replace-the-missing-values-with-the-average-of-the-non-missing-values-of-that-column." class="section level1">
@@ -340,14 +343,14 @@ glimpse(tit)</code></pre>
 ## $ Cab         &lt;fctr&gt; C, C, C, C, C, C, E, C, C, C, G, C, C, C, C, C, C...</code></pre>
 </div>
 <div id="exporting-the-data-as-.csv-and-.json-formats." class="section level1">
-<h1>6. Exporting the data as .csv and .json formats.</h1>
+<h1>1.6. Exporting the data as .csv and .json formats.</h1>
 </div>
 <div id="exprort-the-data-as-.csv-file" class="section level1">
-<h1>6.1 Exprort the data as .csv file</h1>
+<h1>Exprort the data as .csv file</h1>
 <pre class="r"><code>write.csv(tit, file = &quot;titCsv.csv&quot;)</code></pre>
 </div>
 <div id="exprort-the-data-as-.json-file" class="section level1">
-<h1>6.1 Exprort the data as .json file</h1>
+<h1>Exprort the data as .json file</h1>
 <pre class="r"><code>library(rjson)
 titJson &lt;- toJSON(unname(split(tit, 1:nrow(tit))))
 cat(titJson)</code></pre>
@@ -376,6 +379,71 @@ print (&quot;JSON saved!&quot;)
 <p>The output file parsed.json is imported and checked in R.</p>
 <pre class="r"><code>result &lt;- fromJSON(file = &quot;parsed.json&quot;)</code></pre>
 <p>The result is worse than the previous one, obtained in R.</p>
+</div>
+<div id="exercise-2-text-data." class="section level1">
+<h1>Exercise 2: Text data.</h1>
+<p>We’ll are looking into Amazon reviews, and the steps needed to transform a raw dataset into one more suitable for prediction tasks.</p>
+</div>
+<div id="download-the-data-in-.json-format." class="section level1">
+<h1>2.1 Download the data in .json format.</h1>
+<pre class="r"><code>result &lt;- fromJSON(file = &quot;Automotive_5.json&quot;)
+print(result)</code></pre>
+<pre><code>## $reviewerID
+## [1] &quot;A3F73SC1LY51OO&quot;
+## 
+## $asin
+## [1] &quot;B00002243X&quot;
+## 
+## $reviewerName
+## [1] &quot;Alan Montgomery&quot;
+## 
+## $helpful
+## [1] 4 4
+## 
+## $reviewText
+## [1] &quot;I needed a set of jumper cables for my new car and these had good reviews and were at a good price.  They have been used a few times already and do what they are supposed to - no complaints there.What I will say is that 12 feet really isn't an ideal length.  Sure, if you pull up front bumper to front bumper they are plenty long, but a lot of times you will be beside another car or can't get really close.  Because of this, I would recommend something a little longer than 12'.Great brand - get 16' version though.&quot;
+## 
+## $overall
+## [1] 5
+## 
+## $summary
+## [1] &quot;Work Well - Should Have Bought Longer Ones&quot;
+## 
+## $unixReviewTime
+## [1] 1313539200
+## 
+## $reviewTime
+## [1] &quot;08 17, 2011&quot;</code></pre>
+<p>It seems that the reading did not succeed, and only the first json object was read.</p>
+<p>Useful library for dealing with .json objects . The tutorial is given <a href="https://cran.r-project.org/web/packages/tidyjson/vignettes/introduction-to-tidyjson.html">here</a> eBook about handling and processing strings in R <a href="http://gastonsanchez.com/Handling_and_Processing_Strings_in_R.pdf">here</a></p>
+</div>
+<div id="downcase-the-contents-remove-all-punctuation-and-stop-words-in-the-reviewtext-field" class="section level1">
+<h1>2.2 Downcase the contents, remove all punctuation and stop-words in the reviewText field</h1>
+<pre class="r"><code>library(tm)</code></pre>
+<pre><code>## Loading required package: NLP</code></pre>
+<pre><code>## 
+## Attaching package: 'NLP'</code></pre>
+<pre><code>## The following object is masked from 'package:ggplot2':
+## 
+##     annotate</code></pre>
+<pre class="r"><code>textBeg&lt;-result[['reviewText']]
+textBeg &lt;- result$reviewText
+textBeg = tolower(textBeg) #make it lower case
+textBeg</code></pre>
+<pre><code>## [1] &quot;i needed a set of jumper cables for my new car and these had good reviews and were at a good price.  they have been used a few times already and do what they are supposed to - no complaints there.what i will say is that 12 feet really isn't an ideal length.  sure, if you pull up front bumper to front bumper they are plenty long, but a lot of times you will be beside another car or can't get really close.  because of this, i would recommend something a little longer than 12'.great brand - get 16' version though.&quot;</code></pre>
+<pre class="r"><code>textBeg = gsub('[[:punct:]]', '', textBeg) #remove punctuation
+textBeg</code></pre>
+<pre><code>## [1] &quot;i needed a set of jumper cables for my new car and these had good reviews and were at a good price  they have been used a few times already and do what they are supposed to  no complaints therewhat i will say is that 12 feet really isnt an ideal length  sure if you pull up front bumper to front bumper they are plenty long but a lot of times you will be beside another car or cant get really close  because of this i would recommend something a little longer than 12great brand  get 16 version though&quot;</code></pre>
+<pre class="r"><code>#remove stop-words
+stopwords_regex = paste(stopwords('en'), collapse = '\\b|\\b')
+stopwords_regex = paste0('\\b', stopwords_regex, '\\b')
+textBeg = stringr::str_replace_all(textBeg, stopwords_regex, '')
+textBeg</code></pre>
+<pre><code>## [1] &quot; needed  set  jumper cables   new car    good reviews     good price     used   times already      supposed    complaints therewhat  will say   12 feet really isnt  ideal length  sure   pull  front bumper  front bumper   plenty long   lot  times  will  beside another car  cant get really close       recommend something  little longer  12great brand  get 16 version though&quot;</code></pre>
+<ol start="4" style="list-style-type: lower-alpha">
+<li>Apply a stemmer on the paragraphs, so that inflected forms are mapped to the base form. For example, for python the popular natural language toolkit nltk has an easy-to-use stemmer.</li>
+<li>Filter the data by selecting reviews where the field overall is 4 or 5, and store the review texts in file pos.txt. Similarly, select reviews with rating 1 or 2 and store the reviews in file neg.txt. (Ignore the reviews with overall rating 3.) Each line in the two files should contain exactly one preprocessed review text without the rating. Having created two collections of positive and negative reviews, respectively, you may wish to take a quick look to see how the review texts differ between them. Here too, we will be using this data later to experiment with machine learning methods.</li>
+</ol>
 </div>
 <div id="exercise-3-sql-data-baseball." class="section level1">
 <h1>Exercise 3: SQL data (Baseball).</h1>
