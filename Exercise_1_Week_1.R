@@ -69,7 +69,7 @@ print(titJson)
 result <- fromJSON(file = "parsed.json")
 
 # Print the result.
-#print(result)
+#cat(result)
 
 #Exercise 3: SQL-data
 

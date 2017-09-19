@@ -1,0 +1,165 @@
+---
+title: "Exercise set Week 2"
+output: html_document
+---
+
+# Exercise set 2
+
+# Exercise 1: Exploratory data analysis
+
+Here we continue to study the Titanic data set from Week 1 (Exercise 1). 
+
+We use the preprocessed data during Week 1. The columns Name and Ticket are excluded from dataset because they are not related to the analysis. 
+I also remove the column PassengerId from the data set since it is not useful for the further statistical analysis.
+
+```{r}
+library(dplyr)
+
+titanic <- read.csv(file="testOut.csv",header=TRUE,sep=",")
+keep <- c("Survived", "Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Cabin", "Embarked")
+titanic <- select(titanic, one_of(keep))
+```
+
+
+#1.1	Add average values at the last row of the dataframe
+
+
+```
+#initially set the ast row to be the same as row=890
+data.loc[892,:] = data.loc[890,:]
+col_names= ["Survived","Sex", "Embarked", "Cabin", "PassengerId", "Pclass", "Age", "SibSp", "Parch", "Fare"]
+print("Average Joe:")
+
+for val in col_names:
+    #for categorical columns take mode
+ if (val == "Sex" or val == "Embarked" or val == "Cabin" ):
+     data[892,val] = data[val].mode()
+ #for numerical columns take median
+ else:
+     data[892,val] = data[val].median()
+
+ #dataA = concat(data, averageJoe)
+ data.tail(n=5)
+```
+
+Last row represent the "Average Joe" on board of the ship. who is male at age about 30 and did not survived. The values of other variables at the last row: Pclass = 3, SibSp = 0, Parch = 0, Fare = 14.45, Cabin = 75, Embarked = 2. 
+
+#1.2	Take subsets SurvivorJane and NonsurvivorJoe
+
+Subset of survived females is formed as: 
+```
+Female= data["Sex"] > 0
+Female.head(5)
+Survived = data["Survived"] >0
+Survived.head(5)
+SurvivorJane = data[Female & Survived]
+```
+
+Subsed of non-survived males is taken as: 
+```
+Male= data["Sex"] < 1
+Male.head(5)
+NonSurvivor = data["Survived"] < 1
+NonSurvivorJoe = data[Male & NonSurvivor]
+```
+
+#1.3	Exploratory analysis of the subsets SurvivorJane and NonsurvivorJoe
+I remove the column PassengerId from both subsests as it does not provide useful statistical information. 
+
+```{r}
+SurvivorJane <- read.csv(file="SurvivorJane.csv",header=TRUE,sep=",")
+#remove PassingerID
+keep <- c("Survived", "Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Cabin", "Embarked")
+SurvivorJane <- select(SurvivorJane, one_of(keep))
+dim(SurvivorJane)
+summary(SurvivorJane)
+```
+
+
+```{r}
+NonSurvivorJoe <- read.csv(file="NonSurvivorJoe.csv",header=TRUE,sep=",")
+#remove PassingerID
+NonSurvivorJoe <- select(NonSurvivorJoe, one_of(keep))
+dim(NonSurvivorJoe)
+summary(NonSurvivorJoe)
+```
+
+We observe that the number of survived females is 233, which is about two time less than the number of non survived males, which is 468. the function ggpairs in ggplot2 in R. 
+
+First look the distributions of all variables of the whole data set. Different colors are according the Sex column. 
+
+```{r}
+library(GGally)
+library(ggplot2)
+titanic$Sex <- as.factor(titanic$Sex)
+pTitanic <- ggpairs(titanic, mapping = aes(col=Sex, alpha=0.3), lower = list(combo = wrap("facethist", bins = 20)))
+pTitanic
+
+```
+
+Another presentation of correlation plot: 
+
+```{r}
+#another presentation of correlation matrix
+titanic$Sex <- as.numeric(titanic$Sex)
+titanic$Survived <- as.numeric(titanic$Survived)
+cor_matrix<-cor(titanic) %>% round(digits =2)
+cor_matrix
+library(corrplot)
+corrplot(cor_matrix, method="circle", type = "upper", cl.pos = "b", tl.pos = "d", tl.cex = 0.6)
+
+```
+
+The correlation matrix suggests a high negative correlation between survived and Sex, and Pclass and Fare. 
+
+It becomes clear that the male on the ship were more than female, but the males among non-survivals are much more. 
+The graphs on the diagonal reflect the marginal distributions of the variables.
+It seems that there was no variable, which show normal distribution in the data set. 
+On the first column on the graph we se how the survivals depend on the other variables. The variables Cabin and Embarked are closely related to survivals.
+
+
+The distributions of the variables in *survivalJane* subgroup: 
+```{r}
+SurvivorJane$Embarked <- as.factor(SurvivorJane$Embarked)
+pJane <- ggpairs(SurvivorJane, mapping = aes(col=Embarked, alpha=0.3), lower = list(combo = wrap("facethist", bins = 20)))
+pJane
+```
+Correlation matrix of this subset suggests high negative correlation between Pclass and Fare: 
+
+```{r}
+SurvivorJane$Embarked <- as.numeric(SurvivorJane$Embarked)
+cor_matrix<-cor(SurvivorJane) %>% round(digits =2)
+cor_matrix
+corrplot(cor_matrix, method="circle", type = "upper", cl.pos = "b", tl.pos = "d", tl.cex = 0.6)
+
+```
+
+The distributions of the Cabin seems to be normal. 
+
+The distributions of the variables in *Non-survival Joe* subgroup:
+```{r}
+NonSurvivorJoe$Embarked <- as.factor(NonSurvivorJoe$Embarked)
+pJoe <- ggpairs(NonSurvivorJoe, mapping = aes(col=Embarked, alpha=0.3), lower = list(combo = wrap("facethist", bins = 20)))
+pJoe
+```
+
+Again the Cabin show close to normal distribution. It seems that there are not pairwise correlated variables. 
+
+The correlation matrix of this subset shows high negative correlation between Pclass and Fare, and high positive corellation between SibSp and Parch. 
+```{r}
+NonSurvivorJoe$Embarked <- as.numeric(NonSurvivorJoe$Embarked)
+cor_matrix<-cor(NonSurvivorJoe) %>% round(digits =2)
+cor_matrix
+corrplot(cor_matrix, method="circle", type = "upper", cl.pos = "b", tl.pos = "d", tl.cex = 0.6)
+
+
+```
+
+
+
+
+
+
+
+
+

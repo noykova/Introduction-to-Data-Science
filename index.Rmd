@@ -18,4 +18,11 @@ output:
 ```
   
 ***
+
+***
+  
+```{r child = "Exercise_1_Week_2.Rmd"}
+```
+  
+***
   

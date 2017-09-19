@@ -1,0 +1,149 @@
+import csv
+import json
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+#change wiorking directory
+os.chdir("D:\\Neli\HYkurssitSyksy2017\IntroDataSci")
+
+data = pd.read_csv("train.csv")
+
+#dim in R
+data.shape 
+#Summary in R
+data.describe
+#head in R
+data.head(n=10)
+#data type
+data.dtypes
+
+
+values_to_remove = ["Ticket", "Name"]
+
+# Turn categorical values into numbers instead of strings
+categorical_values = ["Sex", "Embarked", "Cabin"]
+for val in categorical_values:
+    data[val] = data[val].astype('category')
+    
+#data type
+data.dtypes
+
+cat_columns = data.select_dtypes(['category']).columns
+data[cat_columns] = data[cat_columns].apply(lambda x: x.cat.codes)
+
+# Remove useless columns
+for val in values_to_remove:
+    del data[val]
+
+# Imputation categorical - mode
+data.replace(-1, np.NaN, inplace=True)
+
+for val in categorical_values:
+    data[val].fillna(data[val].median(), inplace=True)
+
+# Continuous features - median
+for val in ["Age", "Fare", "Pclass", "SibSp"]:
+    data[val].fillna(data[val].mean(), inplace=True)
+
+#write edited data as csv
+data.to_csv('testOut.csv', index=False)
+
+#convert to .json and write as a file
+with open("out.json", 'w') as f:
+    f.write(data.to_json(orient="records"));
+
+
+with open("out.json") as json_data:
+    d=json.load(json_data)
+    print(d)
+
+#Here the exercise 1 from Week 1 finish. Ex1 from Week2 starts.
+
+import csv
+import json
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+#pip.main(['install','seaborn'])
+#from seaborn import *
+#! pip install seaborn - ne raboti
+
+#change working directory
+os.chdir("E:\\Neli\HYKurssitSyksy2017\Introductio_to_data_science\Intro_GitHub")
+
+data = pd.read_csv("testOut.csv")
+data.head(n=10)
+#show column names
+list(data)
+#command str in R = structure
+data.describe()
+
+
+#1.1 calculate mode for categorical variables
+categorical_values = ["Sex", "Embarked", "Cabin"]
+for val in categorical_values:
+    print(val, data[val].mode())
+    
+ #1.1 calculate median for numerical variables
+num_columns = ["PassengerId", "Pclass", "Age", "SibSp", "Parch", "Fare"]
+for val in num_columns:
+    print(val, data[val].median())
+
+#1.2 Select from data where num_columns = mean and cat_values are median
+
+#data types
+data.dtypes
+
+
+#Average Joe
+# Select from data where num_columns = mean and cat_values are median
+#exclude PassengerID from the data
+#this will be the last row of the data
+#initially set the ast row to be the same as row=700
+data.loc[892,:] = data.loc[890,:]
+
+col_names= ["Survived","Sex", "Embarked", "Cabin", "PassengerId", "Pclass", "Age", "SibSp", "Parch", "Fare"]
+print("Average Joe:")
+
+for val in col_names:
+    #for categorical columns take mode
+ if (val == "Sex" or val == "Embarked" or val == "Cabin" ):
+     data[892,val] = data[val].mode()
+ #for numerical columns take median
+ else:
+     data[892,val] = data[val].median()
+
+     
+ #dataA = concat(data, averageJoe)
+ data.tail(n=5)
+     
+#averageJoe1 = data.apply(data.num_columns.median)
+#data.groupby(categorical_values).apply(pd.DataFrame.mode).reset_index(drop=True)
+ data.tail(n=5)   
+    
+#1.2 Subset of survived females
+Female= data["Sex"] > 0
+Female.head(5)
+Survived = data["Survived"] >0
+Survived.head(5)
+SurvivorJane = data[Female & Survived]
+SurvivorJane.head(n=5)
+NonSurvivorJoe.head(n=5)
+SurvivorJane.shape
+
+#1.2 Subset of non-survivor males
+Male= data["Sex"] < 1
+Male.head(5)
+NonSurvivor = data["Survived"] < 1
+NonSurvivor .head(5)
+NonSurvivorJoe = data[Male & NonSurvivor]
+NonSurvivorJoe.head(n=5)
+NonSurvivorJoe.tail(n=5)
+NonSurvivorJoe.shape
+
+
+
+
+
